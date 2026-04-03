@@ -5,8 +5,12 @@ const Record = require('../models/Record');
 // @access  Public (Will be protected later)
 const getSummary = async (req, res) => {
   try {
-    // 1. Calculate grand totals
-    const records = await Record.find();
+    // 1. Calculate grand totals based on role
+    let query = {};
+    if (req.user.role !== 'Admin') {
+      query.user = req.user._id;
+    }
+    const records = await Record.find(query).populate('user', 'name');
     
     let totalIncome = 0;
     let totalExpenses = 0;
@@ -31,10 +35,7 @@ const getSummary = async (req, res) => {
     });
 
     // 3. Recent activity (last 5 records)
-    const recentActivity = await Record.find()
-      .populate('user', 'name')
-      .sort({ date: -1 })
-      .limit(5);
+    const recentActivity = records.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
 
     res.json({
       totals: {

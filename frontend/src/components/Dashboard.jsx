@@ -81,11 +81,15 @@ export default function Dashboard({ user, onLogout }) {
           </div>
           <ul className="nav-links">
               <li className={activeTab === 'Overview' ? 'active' : ''} onClick={() => setActiveTab('Overview')}>Overview</li>
-              <li className={activeTab === 'Transactions' ? 'active' : ''} onClick={() => setActiveTab('Transactions')}>Transactions</li>
-              {user.role === 'Admin' && (
-                <li className={activeTab === 'Users' ? 'active' : ''} onClick={() => setActiveTab('Users')}>Users</li>
+              {(user.role === 'Admin' || user.role === 'Analyst') && (
+                <li className={activeTab === 'Transactions' ? 'active' : ''} onClick={() => setActiveTab('Transactions')}>Transactions</li>
               )}
-              <li className={activeTab === 'Reports' ? 'active' : ''} onClick={() => setActiveTab('Reports')}>Reports</li>
+              {user.role === 'Admin' && (
+                <>
+                  <li className={activeTab === 'Users' ? 'active' : ''} onClick={() => setActiveTab('Users')}>Users</li>
+                  <li className={activeTab === 'Reports' ? 'active' : ''} onClick={() => setActiveTab('Reports')}>Reports</li>
+                </>
+              )}
           </ul>
           <div className="sidebar-bottom">
               <div className="user-profile">
@@ -180,9 +184,9 @@ export default function Dashboard({ user, onLogout }) {
             )
           )}
 
-          {activeTab === 'Transactions' && <Transactions user={user} />}
+          {activeTab === 'Transactions' && (user.role === 'Admin' || user.role === 'Analyst') && <Transactions user={user} />}
           {activeTab === 'Users' && user.role === 'Admin' && <Users user={user} />}
-          {activeTab === 'Reports' && <Reports />}
+          {activeTab === 'Reports' && user.role === 'Admin' && <Reports />}
 
       </main>
 

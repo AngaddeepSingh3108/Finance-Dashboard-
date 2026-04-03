@@ -10,6 +10,11 @@ const getRecords = async (req, res) => {
     // Build query object
     let query = {};
     
+    // Restrict Analyst/Viewer to only see their own records, Admin sees all
+    if (req.user.role !== 'Admin') {
+      query.user = req.user._id;
+    }
+    
     if (type) query.type = type;
     if (category) query.category = category;
     

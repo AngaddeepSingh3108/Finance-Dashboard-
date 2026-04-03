@@ -47,11 +47,11 @@ const getRecordById = async (req, res) => {
 // @route   POST /api/records
 // @access  Public (Will be protected later)
 const createRecord = async (req, res) => {
-  const { user, amount, type, category, date, notes } = req.body;
+  const { amount, type, category, date, notes } = req.body;
 
   try {
     const record = new Record({
-      user, // Taking user from body for now, later from auth req.user
+      user: req.user._id,
       amount,
       type,
       category,

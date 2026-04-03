@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const { errorHandler } = require('./middleware/errorMiddleware');
 const userRoutes = require('./routes/userRoutes');
 const recordRoutes = require('./routes/recordRoutes');
 const summaryRoutes = require('./routes/summaryRoutes');
@@ -22,6 +23,8 @@ app.use(cors());
 app.use('/api/users', userRoutes);
 app.use('/api/records', recordRoutes);
 app.use('/api/summary', summaryRoutes);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

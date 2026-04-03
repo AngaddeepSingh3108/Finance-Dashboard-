@@ -1,4 +1,4 @@
-# 💰 FinDash — Finance Dashboard Portal
+# FinDash — Finance Dashboard Portal
 
 A modern, role-based financial management dashboard built with **React**, **Node.js**, **Express**, and **MongoDB**. FinDash allows organizations to track income, expenses, and financial activity across multiple user roles with strict access control enforced at both the API and UI level.
 
@@ -37,7 +37,7 @@ A modern, role-based financial management dashboard built with **React**, **Node
 
 FinDash enforces a strict 3-tier permission system, applied at both the **API middleware** level and the **React UI** level.
 
-| Feature               | 👁️ Viewer | 📈 Analyst | 🛡️ Admin |
+| Feature               |  Viewer   |  Analyst  |  Admin  |
 |-----------------------|-----------|-----------|---------|
 | View Overview         | ✅        | ✅        | ✅      |
 | View Transactions     | ❌        | ✅ (own)  | ✅ (all)|
@@ -46,62 +46,6 @@ FinDash enforces a strict 3-tier permission system, applied at both the **API mi
 | Delete Record         | ❌        | ❌        | ✅      |
 | View Users Panel      | ❌        | ❌        | ✅      |
 | Access Reports        | ❌        | ❌        | ✅      |
-
----
-
-## 🚀 Getting Started (Running Locally)
-
-### Prerequisites
-- Node.js v18+
-- MongoDB (local or Atlas)
-- npm
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/AngaddeepSingh3108/Finance-Dashboard-.git
-cd Finance-Dashboard-
-```
-
-### 2. Setup the Backend
-
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file inside the `backend/` folder:
-
-```env
-PORT=5001
-MONGO_URI=mongodb://127.0.0.1:27017/finance_dashboard
-```
-
-Seed the database with the 3 test users:
-
-```bash
-node seed.js
-```
-
-Start the API server:
-
-```bash
-node server.js
-```
-
-The backend will run on `http://localhost:5001`
-
-### 3. Setup the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The React app will run on `http://localhost:5173`
-
-> **Note:** To run locally, make sure `Login.jsx`, `Dashboard.jsx`, `Transactions.jsx`, and `Users.jsx` all have `BASE_URL` pointing to `http://localhost:5001/api`.
 
 ---
 
@@ -198,31 +142,7 @@ Finance_Dashboard/
 
 ---
 
-## 🚢 Deployment
-
-### Backend (Render)
-1. Create a new **Web Service** on [Render](https://render.com)
-2. Connect your GitHub repository
-3. Set **Root Directory** to `backend`
-4. Set **Start Command** to `node server.js`
-5. Add environment variables:
-   - `MONGO_URI` = your MongoDB Atlas connection string
-   - `PORT` = `5001`
-
-### Frontend (Vercel)
-1. Import your GitHub repository on [Vercel](https://vercel.com)
-2. Set **Root Directory** to `frontend`
-3. Vercel auto-detects Vite — click Deploy!
-
-### Database (MongoDB Atlas)
-1. Create a free M0 cluster on [MongoDB Atlas](https://cloud.mongodb.com)
-2. Create a database user with a strong password
-3. Set Network Access to `0.0.0.0/0` to allow Render connections
-4. Copy the connection string into Render's environment variables
-
----
-
-## 👤 Author
+## Author
 
 **Angaddeep Singh**  
 GitHub: [@AngaddeepSingh3108](https://github.com/AngaddeepSingh3108)

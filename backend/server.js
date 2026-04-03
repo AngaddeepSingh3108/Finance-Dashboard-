@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
+const recordRoutes = require('./routes/recordRoutes');
 
 // Load env vars
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cors());
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/records', recordRoutes);
 
 const PORT = process.env.PORT || 5000;
 

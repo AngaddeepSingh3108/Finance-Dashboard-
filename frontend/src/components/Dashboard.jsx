@@ -6,7 +6,7 @@ import './Dashboard.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = 'http://localhost:5001/api';
 
 export default function Dashboard({ user, onLogout }) {
   const [data, setData] = useState(null);

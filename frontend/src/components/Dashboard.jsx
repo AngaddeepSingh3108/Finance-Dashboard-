@@ -165,7 +165,7 @@ export default function Dashboard({ user, onLogout }) {
                                         <div className="item-icon">{item.type === 'income' ? '↓' : '↑'}</div>
                                         <div className="item-details">
                                             <h4>{item.category}</h4>
-                                            <p>{new Date(item.date).toLocaleDateString()} &middot; {item.user.name}</p>
+                                            <p>{new Date(item.date).toLocaleDateString()} &middot; {item.user?.name || 'Unknown User'}</p>
                                         </div>
                                     </div>
                                     <div className="item-right">

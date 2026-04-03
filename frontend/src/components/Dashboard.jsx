@@ -10,7 +10,7 @@ import Reports from './Reports';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BASE_URL = 'http://localhost:5001/api';
+const BASE_URL = 'https://finance-dashboard-399e.onrender.com/api';
 
 export default function Dashboard({ user, onLogout }) {
   const [data, setData] = useState(null);

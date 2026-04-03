@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5001/api';
+const BASE_URL = 'https://finance-dashboard-399e.onrender.com/api';
 
 export default function Users({ user }) {
   const [users, setUsers] = useState([]);

@@ -41,7 +41,24 @@ const createUser = async (req, res) => {
   }
 };
 
+// @desc    Login user (Mock)
+// @route   POST /api/users/login
+// @access  Public
+const loginUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(401).json({ message: 'Invalid email' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server ' });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
+  loginUser,
 };

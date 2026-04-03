@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
-const { getUsers, createUser } = require('../controllers/userController');
+const { getUsers, createUser, loginUser } = require('../controllers/userController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { validateRequest } = require('../middleware/validate');
 
@@ -13,6 +13,8 @@ const userValidation = [
 
 router.route('/')
   .get(protect, authorize('Admin'), getUsers)
-  .post(userValidation, validateRequest, createUser); // Open so we can test easily
+  .post(userValidation, validateRequest, createUser); 
+
+router.post('/login', loginUser);
 
 module.exports = router;

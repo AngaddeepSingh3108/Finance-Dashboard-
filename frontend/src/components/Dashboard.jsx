@@ -4,6 +4,10 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
 
+import Transactions from './Transactions';
+import Users from './Users';
+import Reports from './Reports';
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const BASE_URL = 'http://localhost:5001/api';
@@ -11,6 +15,7 @@ const BASE_URL = 'http://localhost:5001/api';
 export default function Dashboard({ user, onLogout }) {
   const [data, setData] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('Overview');
   const [record, setRecord] = useState({ amount: '', type: 'expense', category: '' });
 
   const fetchData = async () => {
@@ -42,14 +47,12 @@ export default function Dashboard({ user, onLogout }) {
     }
   };
 
-  if(!data) return <div style={{padding:'3rem'}}>Loading dashboard...</div>;
-
   const chartData = {
-    labels: Object.keys(data.categoryBreakdown).length ? Object.keys(data.categoryBreakdown) : ['No Data'],
+    labels: data && Object.keys(data.categoryBreakdown).length ? Object.keys(data.categoryBreakdown) : ['No Data'],
     datasets: [
       {
         label: 'Amount ($)',
-        data: Object.keys(data.categoryBreakdown).length ? Object.values(data.categoryBreakdown) : [0],
+        data: data && Object.keys(data.categoryBreakdown).length ? Object.values(data.categoryBreakdown) : [0],
         backgroundColor: '#8c82fc',
         borderRadius: 8,
         barPercentage: 0.6
@@ -74,21 +77,22 @@ export default function Dashboard({ user, onLogout }) {
       <nav className="sidebar">
           <div className="logo">
               <div className="logo-icon"></div>
-              <h2>FinDash App</h2>
+              <h2>FinDash</h2>
           </div>
           <ul className="nav-links">
-              <li className="active">Overview</li>
-              <li>Transactions</li>
-              <li>Analytics</li>
-              <li>Audiences</li>
-              <li>Reports</li>
+              <li className={activeTab === 'Overview' ? 'active' : ''} onClick={() => setActiveTab('Overview')}>Overview</li>
+              <li className={activeTab === 'Transactions' ? 'active' : ''} onClick={() => setActiveTab('Transactions')}>Transactions</li>
+              {user.role === 'Admin' && (
+                <li className={activeTab === 'Users' ? 'active' : ''} onClick={() => setActiveTab('Users')}>Users</li>
+              )}
+              <li className={activeTab === 'Reports' ? 'active' : ''} onClick={() => setActiveTab('Reports')}>Reports</li>
           </ul>
           <div className="sidebar-bottom">
-              <div class="user-profile">
+              <div className="user-profile">
                   <div className="avatar"></div>
                   <div className="user-info">
                       <h4>{user.name.split(' ')[0]}</h4>
-                      <p>Premium</p>
+                      <p>{user.role}</p>
                   </div>
               </div>
           </div>
@@ -97,85 +101,100 @@ export default function Dashboard({ user, onLogout }) {
       <main className="main-content">
           <header className="topbar">
               <div className="header-titles">
-                  <h1>Overview Component</h1>
+                  <h1>{activeTab}</h1>
                   <p>{dateStr}</p>
               </div>
               <div className="actions">
                   <button className="btn-outline" onClick={onLogout}>Log out</button>
-                  <button className="btn-primary" onClick={() => setShowModal(true)}>+ Add Record</button>
+                  {activeTab !== 'Reports' && activeTab !== 'Users' && user.role !== 'Viewer' && (
+                      <button className="btn-primary" onClick={() => setShowModal(true)}>+ Add Record</button>
+                  )}
               </div>
           </header>
 
-          <section className="stats-grid">
-              <div className="stat-card">
-                  <div className="stat-info">
-                      <p>Total Income</p>
-                      <h2>${data.totals.totalIncome.toLocaleString()}</h2>
-                      <span className="trend positive">+ From previous month</span>
-                  </div>
-              </div>
-              <div className="stat-card">
-                  <div className="stat-info">
-                      <p>Total Expenses</p>
-                      <h2>${data.totals.totalExpenses.toLocaleString()}</h2>
-                      <span className="trend negative">- From previous month</span>
-                  </div>
-              </div>
-              <div className="stat-card highlight-card">
-                  <div className="stat-info">
-                      <p>Net Balance</p>
-                      <h2>${data.totals.netBalance.toLocaleString()}</h2>
-                      <span className="trend text-dark">Overall profit margin</span>
-                  </div>
-              </div>
-          </section>
-
-          <div className="dashboard-bottom">
-              <section className="chart-section dark-panel">
-                  <div className="panel-header">
-                      <h3>Category Breakdown</h3>
-                      <div className="toggles"><span className="active-toggle">All</span></div>
-                  </div>
-                  <div className="chart-container">
-                      <Bar data={chartData} options={chartOptions} />
-                  </div>
-              </section>
-
-              <section className="recent-section dark-panel">
-                  <div className="panel-header">
-                      <h3>Recent Activity</h3>
-                  </div>
-                  <div className="recent-list">
-                      {data.recentActivity.length === 0 ? (
-                        <p style={{color:'var(--text-gray)', textAlign:'center'}}>No items safely tracked yet</p>
-                      ) : data.recentActivity.map(item => (
-                        <div className="recent-item" key={item._id}>
-                            <div className="item-left">
-                                <div className="item-icon">{item.type === 'income' ? '↓' : '↑'}</div>
-                                <div className="item-details">
-                                    <h4>{item.category}</h4>
-                                    <p>{new Date(item.date).toLocaleDateString()}</p>
-                                </div>
-                            </div>
-                            <div className="item-right">
-                                <h4 className={item.type}>${item.amount.toLocaleString()}</h4>
-                            </div>
+          {activeTab === 'Overview' && (
+            !data ? (
+                <div style={{padding:'3rem', textAlign:'center', color:'var(--text-gray)'}}>Loading dashboard...</div>
+            ) : (
+                <>
+                <section className="stats-grid">
+                    <div className="stat-card">
+                        <div className="stat-info">
+                            <p>Total Income</p>
+                            <h2>${data.totals.totalIncome.toLocaleString()}</h2>
+                            <span className="trend positive">+ Current month</span>
                         </div>
-                      ))}
-                  </div>
-              </section>
-          </div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-info">
+                            <p>Total Expenses</p>
+                            <h2>${data.totals.totalExpenses.toLocaleString()}</h2>
+                            <span className="trend negative">- Current month</span>
+                        </div>
+                    </div>
+                    <div className="stat-card highlight-card">
+                        <div className="stat-info">
+                            <p>Net Balance</p>
+                            <h2>${data.totals.netBalance.toLocaleString()}</h2>
+                            <span className="trend text-dark">Overall profit margin</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div className="dashboard-bottom">
+                    <section className="chart-section dark-panel">
+                        <div className="panel-header">
+                            <h3>Category Breakdown</h3>
+                            <div className="toggles"><span className="active-toggle">All Time</span></div>
+                        </div>
+                        <div className="chart-container">
+                            <Bar data={chartData} options={chartOptions} />
+                        </div>
+                    </section>
+
+                    <section className="recent-section dark-panel">
+                        <div className="panel-header">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div className="recent-list">
+                            {data.recentActivity.length === 0 ? (
+                                <p style={{color:'var(--text-gray)', textAlign:'center', marginTop:'2rem'}}>No current records.</p>
+                            ) : data.recentActivity.map(item => (
+                                <div className="recent-item" key={item._id}>
+                                    <div className="item-left">
+                                        <div className="item-icon">{item.type === 'income' ? '↓' : '↑'}</div>
+                                        <div className="item-details">
+                                            <h4>{item.category}</h4>
+                                            <p>{new Date(item.date).toLocaleDateString()} &middot; {item.user.name}</p>
+                                        </div>
+                                    </div>
+                                    <div className="item-right">
+                                        <h4 className={item.type}>${item.amount.toLocaleString()}</h4>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+                </>
+            )
+          )}
+
+          {activeTab === 'Transactions' && <Transactions user={user} />}
+          {activeTab === 'Users' && user.role === 'Admin' && <Users user={user} />}
+          {activeTab === 'Reports' && <Reports />}
+
       </main>
 
       {showModal && (
         <div className="modal">
             <div className="modal-content">
                 <span className="close-btn" onClick={() => setShowModal(false)}>&times;</span>
-                <h2>Add New Record</h2>
+                <h2 style={{marginBottom: '1.5rem', fontWeight: '500'}}>Add New Record</h2>
                 <form onSubmit={handleAddSubmit}>
                     <div className="form-group">
                         <label>Amount</label>
-                        <input type="number" placeholder="500" required value={record.amount} onChange={e => setRecord({...record, amount:e.target.value})} />
+                        <input type="number" placeholder="e.g. 1500" required value={record.amount} onChange={e => setRecord({...record, amount:e.target.value})} />
                     </div>
                     <div className="form-group">
                         <label>Type</label>
@@ -186,9 +205,9 @@ export default function Dashboard({ user, onLogout }) {
                     </div>
                     <div className="form-group">
                         <label>Category</label>
-                        <input type="text" placeholder="e.g. Salary, Rent" required value={record.category} onChange={e => setRecord({...record, category:e.target.value})} />
+                        <input type="text" placeholder="e.g. Salary, Rent, Coffee" required value={record.category} onChange={e => setRecord({...record, category:e.target.value})} />
                     </div>
-                    <button type="submit" className="btn-primary full-width">Save Record</button>
+                    <button type="submit" className="btn-primary full-width">Save Transaction</button>
                 </form>
             </div>
         </div>

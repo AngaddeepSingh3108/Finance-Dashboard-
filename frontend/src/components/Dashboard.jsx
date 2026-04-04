@@ -10,13 +10,13 @@ import Reports from './Reports';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BASE_URL = 'https://finance-dashboard-399e.onrender.com/api';
+const BASE_URL = import.meta.env.DEV ? 'http://localhost:5001/api' : 'https://finance-dashboard-399e.onrender.com/api';
 
 export default function Dashboard({ user, onLogout }) {
   const [data, setData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState('Overview');
-  const [record, setRecord] = useState({ amount: '', type: 'expense', category: '' });
+  const [record, setRecord] = useState({ amount: '', type: 'expense', category: '', notes: '' });
 
   const fetchData = async () => {
     try {
@@ -37,10 +37,11 @@ export default function Dashboard({ user, onLogout }) {
       await axios.post(`${BASE_URL}/records`, {
         amount: Number(record.amount),
         type: record.type,
-        category: record.category
+        category: record.category,
+        notes: record.notes
       }, { headers: { 'x-user-id': user._id } });
       setShowModal(false);
-      setRecord({ amount: '', type: 'expense', category: '' });
+      setRecord({ amount: '', type: 'expense', category: '', notes: '' });
       fetchData();
     } catch(err) {
       alert("Failed to add.");
@@ -184,9 +185,9 @@ export default function Dashboard({ user, onLogout }) {
             )
           )}
 
-          {activeTab === 'Transactions' && (user.role === 'Admin' || user.role === 'Analyst') && <Transactions user={user} />}
+          {activeTab === 'Transactions' && (user.role === 'Admin' || user.role === 'Analyst') && <Transactions user={user} onRecordChange={fetchData} />}
           {activeTab === 'Users' && user.role === 'Admin' && <Users user={user} />}
-          {activeTab === 'Reports' && user.role === 'Admin' && <Reports />}
+          {activeTab === 'Reports' && user.role === 'Admin' && <Reports user={user} />}
 
       </main>
 
@@ -210,6 +211,10 @@ export default function Dashboard({ user, onLogout }) {
                     <div className="form-group">
                         <label>Category</label>
                         <input type="text" placeholder="e.g. Salary, Rent, Coffee" required value={record.category} onChange={e => setRecord({...record, category:e.target.value})} />
+                    </div>
+                    <div className="form-group">
+                        <label>Notes</label>
+                        <textarea placeholder="e.g. Bought from Starbucks" value={record.notes} onChange={e => setRecord({...record, notes:e.target.value})} rows="3" style={{width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid #38383e', background: '#1c1c1e', color: '#fff'}}></textarea>
                     </div>
                     <button type="submit" className="btn-primary full-width">Save Transaction</button>
                 </form>

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -16,7 +17,7 @@ const getUsers = async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const createUser = async (req, res) => {
-  const { name, email, role } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -25,14 +26,23 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = await User.create({
       name,
       email,
+      password: hashedPassword,
       role: role || 'Viewer',
     });
 
     if (user) {
-      res.status(201).json(user);
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
     }
@@ -45,15 +55,56 @@ const createUser = async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      res.json(user);
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      if (user.status === 'Inactive') {
+        return res.status(403).json({ message: 'Account is inactive' });
+      }
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      });
     } else {
-      res.status(401).json({ message: 'Invalid email' });
+      res.status(401).json({ message: 'Invalid email or password' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Server ' });
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+const updateUserStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      user.status = req.body.status || user.status;
+      const updatedUser = await user.save();
+      res.json(updatedUser);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      await User.findByIdAndDelete(req.params.id);
+      res.json({ message: 'User removed' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
 
@@ -61,4 +112,6 @@ module.exports = {
   getUsers,
   createUser,
   loginUser,
+  updateUserStatus,
+  deleteUser,
 };

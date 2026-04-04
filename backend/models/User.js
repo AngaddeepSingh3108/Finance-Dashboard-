@@ -11,11 +11,20 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
       enum: ['Viewer', 'Analyst', 'Admin'],
       default: 'Viewer',
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Inactive'],
+      default: 'Active',
     },
   },
   {

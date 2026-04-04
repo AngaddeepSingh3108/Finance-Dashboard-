@@ -104,3 +104,17 @@ body {
 
 .form-group { margin-bottom: 1.5rem; text-align: left; }
 .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-gray); font-size: 0.9rem; }
+
+/* Responsive Adjustments */
+img { max-width: 100%; }
+table { width: 100%; min-width: 600px; }
+.dark-panel { overflow-x: auto; }
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 1.5rem;
+        width: 90%;
+    }
+}
+
+

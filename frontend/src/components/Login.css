@@ -45,3 +45,11 @@
 .login-input:focus {
     border-color: var(--primary-neon);
 }
+
+@media (max-width: 480px) {
+    .login-box {
+        width: 90%;
+        padding: 2rem;
+    }
+}
+

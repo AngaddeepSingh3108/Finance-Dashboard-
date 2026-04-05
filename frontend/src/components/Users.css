@@ -1,0 +1,465 @@
+.users-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Approvals Section */
+.approvals-section {
+    border: 1px solid rgba(207, 255, 94, 0.12);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.panel-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pending-badge {
+    background: linear-gradient(135deg, #ff9800, #ff6b35);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(255, 152, 0, 0); }
+}
+
+.user-count {
+    background: rgba(140, 130, 252, 0.15);
+    color: var(--primary-purple);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 10px;
+}
+
+.inactive-count {
+    background: rgba(255, 152, 0, 0.12);
+    color: #ff9800;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+    gap: 0.75rem;
+}
+
+.empty-state p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* Pending Cards */
+.pending-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pending-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    transition: all 0.2s;
+}
+
+.pending-card:hover {
+    border-color: rgba(207, 255, 94, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.pending-card-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pending-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 107, 53, 0.2));
+    border: 1px solid rgba(255, 152, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #ff9800;
+}
+
+.pending-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pending-details h4 {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.pending-details span {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+.pending-date {
+    font-size: 0.75rem !important;
+    color: #666 !important;
+}
+
+.pending-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.role-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.role-selector label {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.role-selector select {
+    padding: 0.45rem 0.75rem;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.role-selector select:focus {
+    border-color: var(--primary-purple);
+}
+
+.pending-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-approve {
+    padding: 0.5rem 1.25rem;
+    background: var(--primary-neon);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-approve:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(207, 255, 94, 0.3);
+}
+
+.btn-approve:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-reject {
+    padding: 0.5rem 1.25rem;
+    background: transparent;
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-reject:hover {
+    background: rgba(255, 107, 107, 0.08);
+    border-color: #ff6b6b;
+}
+
+.btn-reject:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* User Table */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.table-wrapper table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.table-wrapper thead tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-wrapper th {
+    padding: 0.9rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-gray);
+    font-weight: 600;
+}
+
+.table-wrapper tbody tr {
+    border-bottom: 1px solid rgba(56, 56, 62, 0.5);
+    transition: background 0.15s;
+}
+
+.table-wrapper tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.table-wrapper tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-wrapper td {
+    padding: 0.9rem 1rem;
+    vertical-align: middle;
+}
+
+.table-empty {
+    padding: 2rem !important;
+    text-align: center !important;
+    color: var(--text-gray) !important;
+}
+
+/* User Cell */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(140, 130, 252, 0.2), rgba(99, 102, 241, 0.2));
+    border: 1px solid rgba(140, 130, 252, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--primary-purple);
+    flex-shrink: 0;
+}
+
+.inactive-avatar {
+    opacity: 0.5;
+}
+
+.user-cell-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.you-badge {
+    font-size: 0.65rem;
+    background: rgba(207, 255, 94, 0.15);
+    color: var(--primary-neon);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+.date-cell {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+}
+
+/* Role Badge */
+.role-badge {
+    background: rgba(140, 130, 252, 0.15);
+    color: var(--primary-purple);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.role-badge-select {
+    padding: 0.35rem 0.6rem;
+    background: rgba(140, 130, 252, 0.08);
+    border: 1px solid rgba(140, 130, 252, 0.2);
+    border-radius: 8px;
+    color: var(--primary-purple);
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.role-badge-select:hover {
+    border-color: var(--primary-purple);
+    background: rgba(140, 130, 252, 0.12);
+}
+
+.role-badge-select:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 2px rgba(140, 130, 252, 0.15);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    padding: 0.35rem 0.75rem;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+.btn-action:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-action.deactivate {
+    color: #ff9800;
+    border-color: rgba(255, 152, 0, 0.25);
+}
+
+.btn-action.deactivate:hover {
+    background: rgba(255, 152, 0, 0.08);
+    border-color: #ff9800;
+}
+
+.btn-action.activate {
+    color: #4caf50;
+    border-color: rgba(76, 175, 80, 0.25);
+}
+
+.btn-action.activate:hover {
+    background: rgba(76, 175, 80, 0.08);
+    border-color: #4caf50;
+}
+
+.btn-action.delete {
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.2);
+}
+
+.btn-action.delete:hover {
+    background: rgba(255, 107, 107, 0.08);
+    border-color: #ff6b6b;
+}
+
+/* Inactive Row */
+.inactive-row {
+    opacity: 0.65;
+}
+
+.inactive-row:hover {
+    opacity: 0.85;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pending-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .pending-card-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .pending-buttons {
+        justify-content: stretch;
+    }
+
+    .pending-buttons button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .btn-action {
+        text-align: center;
+    }
+}

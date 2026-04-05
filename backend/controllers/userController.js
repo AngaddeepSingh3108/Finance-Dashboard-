@@ -3,21 +3,21 @@ const bcrypt = require('bcryptjs');
 
 // @desc    Get all users
 // @route   GET /api/users
-// @access  Public (for now)
+// @access  Admin only
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).select('-password');
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
 };
 
-// @desc    Create a new user
+// @desc    Register a new user (pending approval)
 // @route   POST /api/users
 // @access  Public
 const createUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -33,7 +33,8 @@ const createUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || 'Viewer',
+      role: 'Viewer',
+      status: 'Pending',
     });
 
     if (user) {
@@ -42,6 +43,8 @@ const createUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        status: user.status,
+        pending: true,
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -51,7 +54,7 @@ const createUser = async (req, res) => {
   }
 };
 
-// @desc    Login user (Mock)
+// @desc    Login user
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = async (req, res) => {
@@ -61,8 +64,11 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      if (user.status === 'Pending') {
+        return res.status(403).json({ message: 'Your account is pending admin approval. Please wait for an administrator to approve your access.' });
+      }
       if (user.status === 'Inactive') {
-        return res.status(403).json({ message: 'Account is inactive' });
+        return res.status(403).json({ message: 'Your account has been deactivated. Please contact an administrator.' });
       }
       res.json({
         _id: user._id,
@@ -79,13 +85,23 @@ const loginUser = async (req, res) => {
   }
 };
 
-const updateUserStatus = async (req, res) => {
+// @desc    Update user status and/or role (admin approval flow)
+// @route   PUT /api/users/:id
+// @access  Admin only
+const updateUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
-      user.status = req.body.status || user.status;
+      if (req.body.status) user.status = req.body.status;
+      if (req.body.role) user.role = req.body.role;
       const updatedUser = await user.save();
-      res.json(updatedUser);
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        status: updatedUser.status,
+      });
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -112,6 +128,6 @@ module.exports = {
   getUsers,
   createUser,
   loginUser,
-  updateUserStatus,
+  updateUser,
   deleteUser,
 };
